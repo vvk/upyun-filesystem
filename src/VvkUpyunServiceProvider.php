@@ -2,7 +2,9 @@
 
 namespace Vvk\Upyun\FileSystem;
 
+use League\Flysystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
+use Storage;
 
 class VvkUpyunServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,9 @@ class VvkUpyunServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Storage::extend('upyun', function ($app, $config) {
+            $adapter = new UpyunAdapter($config);
+            return new Filesystem($adapter);
+        });
     }
 }
