@@ -17,13 +17,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Vvk\\Upyun\\FileSystem\\": "src/"
+            "Vvk\\Upyun\\FileSystem\\": "src"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Vvk\\Upyun\\FileSystem\\UpyunServiceProvider"
+                "Vvk\\Upyun\\FileSystem\\VvkUpyunServiceProvider"
             ]
         }
     }
