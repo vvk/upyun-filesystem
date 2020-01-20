@@ -4,7 +4,6 @@ namespace Vvk\Upyun\FileSystem;
 
 use League\Flysystem\Adapter\AbstractAdapter;
 use League\Flysystem\Config as FlySystemConfig;
-use phpDocumentor\Reflection\Types\Collection;
 use Upyun\Upyun;
 use Upyun\Config;
 
@@ -29,7 +28,7 @@ class UpyunAdapter extends AbstractAdapter
      * Write a new file.
      *
      * @param string $path
-     * @param string $contents
+     * @param string|resource $contents
      * @param FlySystemConfig $config   Config object
      *
      * @return array|false false on failure file meta data on success
