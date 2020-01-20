@@ -1,5 +1,10 @@
 <h1 align="center">Laravel 又拍云驱动</h1>
 
+[![Latest Stable Version](https://poser.pugx.org/vvk/upyun-filesystem/v/stable)](https://packagist.org/packages/vvk/upyun-filesystem)
+[![Total Downloads](https://poser.pugx.org/vvk/upyun-filesystem/downloads)](https://packagist.org/packages/vvk/upyun-filesystem)
+[![Latest Unstable Version](https://poser.pugx.org/vvk/upyun-filesystem/v/unstable)](https://packagist.org/packages/vvk/upyun-filesystem)
+[![License](https://poser.pugx.org/vvk/upyun-filesystem/license)](https://packagist.org/packages/vvk/upyun-filesystem)
+
 ## 环境要求
 - php >= 7.2
 
