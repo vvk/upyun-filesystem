@@ -22,6 +22,7 @@ class UpyunAdapter extends AbstractAdapter
         $this->service = $config['service'];
         $this->operator = $config['operator'];
         $this->password = $config['password'];
+        $this->domain = $config['domain'];
     }
 
     /**
@@ -137,7 +138,11 @@ class UpyunAdapter extends AbstractAdapter
      */
     public function copy($path, $newpath)
     {
-
+        /*$file = $this->read($path);
+        if (isset($file['contents']) || empty($file['contents'])) {
+            return false;
+        }*/
+        return $this->writeStream($newpath, fopen('http:'.$this->getUrl($path), 'r'), new FlySystemConfig());
     }
 
     /**
@@ -214,6 +219,8 @@ class UpyunAdapter extends AbstractAdapter
      */
     public function read($path)
     {
+        $contents = $this->getClient()->read($path);
+        return ['contents' => $contents];
     }
 
     /**
@@ -225,11 +232,12 @@ class UpyunAdapter extends AbstractAdapter
      */
     public function readStream($path)
     {
-
+        return $this->read($path);
     }
 
     /**
      * List contents of a directory.
+     * @see https://help.upyun.com/knowledge-base/rest_api/#e88eb7e58f96e79baee5bd95e69687e4bbb6e58897e8a1a8
      *
      * @param string $directory
      * @param bool   $recursive
@@ -238,7 +246,61 @@ class UpyunAdapter extends AbstractAdapter
      */
     public function listContents($directory = '', $recursive = false)
     {
+        $list = [];
+        $params = ['X-List-Limit' => 100, 'x-list-iter' => null];
+        while (true) {
+            $result = $this->getClient()->read($directory, null, $params);
+            $list = array_merge($list, $this->formatListContents($directory, $result['files']));
 
+            if ($result['is_end'] == true || $result['iter'] == 'g2gCZAAEbmV4dGQAA2VvZg') {
+                break;
+            }
+            $params['x-list-iter'] = $result['iter'];
+        }
+
+        return $list;
+    }
+
+    public function getUrl($path)
+    {
+        $url = $this->domain .'/'. $path;
+        return '//'.$url;
+    }
+
+    /**
+     * @param $directory
+     * @param $list
+     * @return array
+     */
+    protected function formatListContents($directory, $list)
+    {
+        $result = [];
+        if (empty($list)) {
+            return $result;
+        }
+
+        foreach ($list as $item) {
+            $filePath = ltrim($directory . '/' . $item['name'], '/');
+
+            $result[] = [
+                'type' => $this->getType($filePath)['type'],
+                'path' => ltrim($directory . '/' . $item['name'], '/'),
+                'timestamp' => $item['time'],
+                'size' => $item['size'],
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string $path
+     */
+    public function getType($path)
+    {
+        $response = $this->getMetadata($path);
+
+        return ['type' => $response['x-upyun-file-type']];
     }
 
     /**
